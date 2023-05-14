@@ -1,10 +1,17 @@
 package com.hub.Service;
 
+
+import com.hub.dto.AuthenticationResponse;
+import com.hub.dto.LoginRequest;
+import com.hub.dto.RefreshTokenRequest;
+import com.hub.dto.RegisterRequest;
+import com.hub.exceptions.SpringHubException;
 import com.hub.model.NotificationEmail;
 import com.hub.model.User;
 import com.hub.model.VerificationToken;
 import com.hub.repository.UserRepository;
 import com.hub.repository.VerificationTokenRepository;
+import com.hub.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,16 +33,16 @@ import java.util.UUID;
 @Transactional
 public class AuthService {
 
-  /*  private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
-    private final  JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    public void signup(RegisterRequest registerRequest){
-        User user =new User();
+    public void signup(RegisterRequest registerRequest) {
+        User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
@@ -45,19 +53,26 @@ public class AuthService {
 
         String token = generateVerificationToken(user);
         mailService.sendMail(new NotificationEmail("Please Activate your Account",
-                user.getEmail(), "Thank you for signing up to Hub, " +
+                user.getEmail(), "Thank you for signing up to Spring Reddit, " +
                 "please click on the below url to activate your account : " +
                 "http://localhost:8080/api/auth/accountVerification/" + token));
-
     }
+
     @Transactional(readOnly = true)
-    public User getCurrentUser(){
-        Jwt principal =(Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public User getCurrentUser() {
+        Jwt principal = (Jwt) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
         return userRepository.findByUsername(principal.getSubject())
-                .roElseThrow(() -> new UsernameNotFoundException("User name not found with name - " + username));
-        user.setEnabled();
+                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getSubject()));
+    }
+
+    private void fetchUserAndEnable(VerificationToken verificationToken) {
+        String username = verificationToken.getUser().getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringHubException("User not found with name - " + username));
+        user.setEnabled(true);
         userRepository.save(user);
     }
+
     private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
@@ -67,6 +82,12 @@ public class AuthService {
         verificationTokenRepository.save(verificationToken);
         return token;
     }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+        fetchUserAndEnable(verificationToken.orElseThrow(() -> new SpringHubException("Invalid Token")));
+    }
+
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
@@ -82,16 +103,17 @@ public class AuthService {
 
     public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
-        String token = jwtProvider.generateTokenWithUseName(refreshTokenRequest.getUsername());
+        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
         return AuthenticationResponse.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenRequest.getRefreshToken())
-                .expireAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(refreshTokenRequest.getUsername())
                 .build();
     }
-    public boolean isLoggedIn(){
+
+    public boolean isLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
-    }*/
+    }
 }

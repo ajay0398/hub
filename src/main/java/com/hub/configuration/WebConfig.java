@@ -8,8 +8,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-public class WebConfiguration implements WebMvcConfigurer {
-   @Override
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
                 .allowedOriginPatterns("*")
@@ -28,6 +29,4 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-
-
 }

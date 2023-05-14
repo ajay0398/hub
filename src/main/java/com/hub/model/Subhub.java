@@ -9,23 +9,23 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Data
-@Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class SubHub {
+@Entity
+@Builder
+public class Subhub {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
- //   @NotBlank(message = "Community name is required")
-    private String  name;
- //   @NotBlack(message = "Description is required")
+    private String name;
     private String description;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     private List<Post> posts;
     private Instant createdDate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     private User user;
 }

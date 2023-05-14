@@ -1,4 +1,4 @@
-package com.hub.Service;
+package com.hub.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,7 @@ import java.time.Instant;
 @Service
 @RequiredArgsConstructor
 public class JwtProvider {
+
     private final JwtEncoder jwtEncoder;
     @Value("${jwt.expiration.time}")
     private Long jwtExpirationInMillis;

@@ -17,10 +17,9 @@ public class OpenAPIConfiguration {
                 .info(new Info().title("Hub API")
                         .description("API for Hub Application")
                         .version("v0.0.1")
-                        .license(new License().name("Apache License Version 2.0").url("http://hub.com")))
+                        .license(new License().name("Apache License Version 2.0").url("http://google.com")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Expense Tracker Wiki Documentation")
-                        .url("http://expensetracker.wiki/docs"));
+                        .url("https://expensetracker.wiki/docs"));
     }
-
 }

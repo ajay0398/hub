@@ -31,7 +31,7 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     @Value("${jwt.public.key}")
     RSAPublicKey publicKey;
@@ -51,11 +51,13 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/subreddit")
+                        .requestMatchers(HttpMethod.GET, "/api/subhub")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/health/**")
                         .permitAll()
                         .requestMatchers("/v2/api-docs",
                                 "/configuration/ui",
@@ -90,5 +92,4 @@ public class SecurityConfiguration {
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
-
 }

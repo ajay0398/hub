@@ -1,5 +1,6 @@
 package com.hub.Service;
 
+import com.hub.exceptions.SpringHubException;
 import com.hub.model.NotificationEmail;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class MailService {
+class MailService {
 
     private final JavaMailSender mailSender;
     private final MailContentBuilder mailContentBuilder;
@@ -22,7 +23,7 @@ public class MailService {
     void sendMail(NotificationEmail notificationEmail) {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom("ajay.mahato0398@email.com");
+            messageHelper.setFrom("hub@email.com");
             messageHelper.setTo(notificationEmail.getRecipient());
             messageHelper.setSubject(notificationEmail.getSubject());
             messageHelper.setText(notificationEmail.getBody());
@@ -32,7 +33,7 @@ public class MailService {
             log.info("Activation email sent!!");
         } catch (MailException e) {
             log.error("Exception occurred when sending mail", e);
-            throw new RuntimeException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), e);
+            throw new SpringHubException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), e);
         }
     }
 
