@@ -13,4 +13,9 @@ public class HealthCheckController {
     public String check() {
         return "Hi, I am Alive 😝 Welcome to Hub 👉";
     }
+
+    @GetMapping("/developer")
+    public String developer() {
+        return "Hi Welcome to Hub, Ajay and Nishu Here!👫";
+    }
 }
