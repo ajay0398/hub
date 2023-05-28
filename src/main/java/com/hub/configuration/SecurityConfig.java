@@ -46,6 +46,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        System.out.println("I am Here!");
         return httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize

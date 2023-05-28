@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class SubredditService {
+public class SubHubService {
 
     private final SubhubRepository subhubRepository;
     private final SubhubMapper subhubMapper;
